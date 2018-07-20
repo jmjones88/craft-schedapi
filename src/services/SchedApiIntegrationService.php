@@ -14,6 +14,8 @@ use julianmjones\schedapiintegration\SchedApiIntegration;
 
 use Craft;
 use craft\base\Component;
+use GuzzleHttp\Client;
+use Yii;
 
 /**
  * SchedApiIntegrationService Service
@@ -34,22 +36,35 @@ class SchedApiIntegrationService extends Component
     // =========================================================================
 
     /**
-     * This function can literally be anything you want, and you can have as many service
-     * functions as you want
+     * This function gets the Sponsors from the Sched API
      *
      * From any other plugin file, call it like this:
      *
-     *     SchedApiIntegration::$plugin->schedApiIntegrationService->exampleService()
+     *     SchedApiIntegration::$plugin->schedApiIntegrationService->getSponsors()
      *
      * @return mixed
      */
-    public function exampleService()
-    {
-        $result = 'something';
-        // Check our Plugin's settings for `someAttribute`
-        if (SchedApiIntegration::$plugin->getSettings()->someAttribute) {
-        }
 
-        return $result;
+    public function getSponsors()
+    {
+        $cache = Yii::$app->cache;
+        $guzzleClient = new \GuzzleHttp\Client();
+        //Get the attributes for the plugin
+        $apiKey = SchedApiIntegration::$plugin->getSettings()->schedApiKey;
+        $conferenceId = SchedApiIntegration::$plugin->getSettings()->conferenceId;
+
+        if ($apiKey && $conferenceId) {
+            $url = 'https://'.$conferenceId
+            .'.sched.com/api/role/export?api_key='.$apiKey
+            .'&role=sponsor&format=json&strip_html=Y';
+            $response = $guzzleClient->request('POST', $url);
+            if($response->getStatusCode() == "200") {
+                $json = json_decode($response->getBody(), true);
+                return $json;
+            } else {
+                return false;
+            }
+        } 
+        return false;
     }
 }

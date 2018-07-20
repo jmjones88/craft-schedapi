@@ -45,9 +45,10 @@ class SchedApiIntegrationVariable
      * @param null $optional
      * @return string
      */
-    public function exampleVariable($optional = null)
+    public function sponsors($optional = null)
     {
-        $result = "And away we go to the Twig template...";
+        $result = SchedApiIntegration::$plugin->schedApiIntegrationService->getSponsors();
+        //$result = "And away we go to the Twig template...";
         if ($optional) {
             $result = "I'm feeling optional today...";
         }

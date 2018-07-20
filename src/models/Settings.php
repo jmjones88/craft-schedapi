@@ -39,7 +39,8 @@ class Settings extends Model
      *
      * @var string
      */
-    public $someAttribute = 'Some Default';
+    public $schedApiKey = '';
+    public $conferenceId = '';
 
     // Public Methods
     // =========================================================================
@@ -57,8 +58,10 @@ class Settings extends Model
     public function rules()
     {
         return [
-            ['someAttribute', 'string'],
-            ['someAttribute', 'default', 'value' => 'Some Default'],
+            // the name, email, subject and body attributes are required
+            [['schedApiKey', 'conferenceId'], 'required'],
+            ['schedApiKey', 'string'],
+            ['schedApiKey', 'default', 'value' => ''],
         ];
     }
 }

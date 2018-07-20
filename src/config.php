@@ -24,7 +24,9 @@
 
 return [
 
-    // This controls blah blah blah
-    "someAttribute" => true,
+    //The API Key for sched
+    "schedApiKey" => true,
+    //The Conference info for sched
+    "conferenceId" => true,
 
 ];
