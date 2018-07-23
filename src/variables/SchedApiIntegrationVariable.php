@@ -48,10 +48,12 @@ class SchedApiIntegrationVariable
     public function sponsors($optional = null)
     {
         $result = SchedApiIntegration::$plugin->schedApiIntegrationService->getSponsors();
-        //$result = "And away we go to the Twig template...";
-        if ($optional) {
-            $result = "I'm feeling optional today...";
-        }
+        return $result;
+    }
+
+    public function schedule($optional = null)
+    {
+        $result = SchedApiIntegration::$plugin->schedApiIntegrationService->getSchedule();
         return $result;
     }
 }

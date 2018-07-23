@@ -52,11 +52,32 @@ class SchedApiIntegrationService extends Component
         //Get the attributes for the plugin
         $apiKey = SchedApiIntegration::$plugin->getSettings()->schedApiKey;
         $conferenceId = SchedApiIntegration::$plugin->getSettings()->conferenceId;
-
         if ($apiKey && $conferenceId) {
             $url = 'https://'.$conferenceId
             .'.sched.com/api/role/export?api_key='.$apiKey
             .'&role=sponsor&format=json&strip_html=Y';
+            $response = $guzzleClient->request('POST', $url);
+            if($response->getStatusCode() == "200") {
+                $json = json_decode($response->getBody(), true);
+                return $json;
+            } else {
+                return false;
+            }
+        } 
+        return false;
+    }
+
+    public function getSchedule()
+    {
+        $cache = Yii::$app->cache;
+        $guzzleClient = new \GuzzleHttp\Client();
+        //Get the attributes for the plugin
+        $apiKey = SchedApiIntegration::$plugin->getSettings()->schedApiKey;
+        $conferenceId = SchedApiIntegration::$plugin->getSettings()->conferenceId;
+        if ($apiKey && $conferenceId) {
+            $url = 'https://'.$conferenceId
+            .'.sched.com/api/session/export?api_key='.$apiKey
+            .'&format=json';
             $response = $guzzleClient->request('POST', $url);
             if($response->getStatusCode() == "200") {
                 $json = json_decode($response->getBody(), true);
