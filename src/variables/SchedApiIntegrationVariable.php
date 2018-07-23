@@ -56,4 +56,10 @@ class SchedApiIntegrationVariable
         $result = SchedApiIntegration::$plugin->schedApiIntegrationService->getSchedule();
         return $result;
     }
+
+    public function getUser($term, $by = 'username')
+    {
+        $result = SchedApiIntegration::$plugin->schedApiIntegrationService->getUser($term, $by);
+        return $result;
+    }
 }

@@ -2,7 +2,7 @@
     "name": "julianmjones/sched-api-integration",
     "description": "Integration with Sched API and Craft CMS",
     "type": "craft-plugin",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "keywords": [
         "craft",
         "cms",

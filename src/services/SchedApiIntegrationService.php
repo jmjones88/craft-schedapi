@@ -88,4 +88,26 @@ class SchedApiIntegrationService extends Component
         } 
         return false;
     }
+
+    public function getUser($term, $by = 'username', $fields= "username,name,email,about,url,avatar,role,company,position,location")
+    {
+        $cache = Yii::$app->cache;
+        $guzzleClient = new \GuzzleHttp\Client();
+        //Get the attributes for the plugin
+        $apiKey = SchedApiIntegration::$plugin->getSettings()->schedApiKey;
+        $conferenceId = SchedApiIntegration::$plugin->getSettings()->conferenceId;
+        if ($apiKey && $conferenceId) {
+            $url = 'https://'.$conferenceId
+            .'.sched.com/api/user/get?api_key='.$apiKey
+            .'&format=json&by='.$by.'&term='.$term.'&fields='.$fields;
+            $response = $guzzleClient->request('POST', $url);
+            if($response->getStatusCode() == "200") {
+                $json = json_decode($response->getBody(), true);
+                return $json;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
 }
