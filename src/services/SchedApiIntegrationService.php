@@ -77,7 +77,7 @@ class SchedApiIntegrationService extends Component
         if ($apiKey && $conferenceId) {
             $url = 'https://'.$conferenceId
             .'.sched.com/api/session/export?api_key='.$apiKey
-            .'&format=json';
+            .'&format=json&custom_data=Y';
             $response = $guzzleClient->request('POST', $url);
             if($response->getStatusCode() == "200") {
                 $json = json_decode($response->getBody(), true);
@@ -108,6 +108,31 @@ class SchedApiIntegrationService extends Component
                 return false;
             }
         }
+        return false;
+    }
+
+    public function getRoleExport($role = 'speaker', $fields = '')
+    {
+        $cache = Yii::$app->cache;
+        $guzzleClient = new \GuzzleHttp\Client();
+        //Get the attributes for the plugin
+        $apiKey = SchedApiIntegration::$plugin->getSettings()->schedApiKey;
+        $conferenceId = SchedApiIntegration::$plugin->getSettings()->conferenceId;
+        if ($apiKey && $conferenceId) {
+            $url = 'https://'.$conferenceId
+            .'.sched.com/api/role/export?api_key='.$apiKey
+            .'&role='.$role.'&format=json&strip_html=Y';
+            if($fields) {
+                $url = $url.'fields='.$fields;
+            }
+            $response = $guzzleClient->request('POST', $url);
+            if($response->getStatusCode() == "200") {
+                $json = json_decode($response->getBody(), true);
+                return $json;
+            } else {
+                return false;
+            }
+        } 
         return false;
     }
 }

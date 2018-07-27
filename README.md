@@ -18,7 +18,7 @@ To install the plugin, follow these instructions.
 
 2. Then tell Composer to load the plugin:
 
-        composer require Craft 3 Sched API Integration/sched-api-integration
+        composer require jmjones88/sched-api-integration
 
 3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Sched API Integration.
 
