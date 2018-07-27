@@ -123,7 +123,7 @@ class SchedApiIntegrationService extends Component
             .'.sched.com/api/role/export?api_key='.$apiKey
             .'&role='.$role.'&format=json&strip_html=Y';
             if($fields) {
-                $url = $url.'fields='.$fields;
+                $url = $url.'&fields='.$fields;
             }
             $response = $guzzleClient->request('POST', $url);
             if($response->getStatusCode() == "200") {

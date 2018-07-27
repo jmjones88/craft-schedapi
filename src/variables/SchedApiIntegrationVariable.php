@@ -63,7 +63,7 @@ class SchedApiIntegrationVariable
         return $result;
     }
 
-    public function getSpeakers($fields = 'username,name,about,avatar')
+    public function getSpeakers($fields = 'username,name,about,avatar,position')
     {
         $result = SchedApiIntegration::$plugin->schedApiIntegrationService->getRoleExport('speaker', $fields);
         return $result;
