@@ -69,24 +69,31 @@ class SchedApiIntegrationService extends Component
 
     public function getSchedule()
     {
+        $key = 'sched_schedule';
         $cache = Yii::$app->cache;
-        $guzzleClient = new \GuzzleHttp\Client();
-        //Get the attributes for the plugin
-        $apiKey = SchedApiIntegration::$plugin->getSettings()->schedApiKey;
-        $conferenceId = SchedApiIntegration::$plugin->getSettings()->conferenceId;
-        if ($apiKey && $conferenceId) {
-            $url = 'https://'.$conferenceId
-            .'.sched.com/api/session/export?api_key='.$apiKey
-            .'&format=json&custom_data=Y';
-            $response = $guzzleClient->request('POST', $url);
-            if($response->getStatusCode() == "200") {
-                $json = json_decode($response->getBody(), true);
-                return $json;
-            } else {
-                return false;
+        $data = $cache->get($key);
+        if ($data === false) {
+            $guzzleClient = new \GuzzleHttp\Client();
+            //Get the attributes for the plugin
+            $apiKey = SchedApiIntegration::$plugin->getSettings()->schedApiKey;
+            $conferenceId = SchedApiIntegration::$plugin->getSettings()->conferenceId;
+            if ($apiKey && $conferenceId) {
+                $url = 'https://'.$conferenceId
+                .'.sched.com/api/session/export?api_key='.$apiKey
+                .'&format=json&custom_data=Y';
+                $response = $guzzleClient->request('POST', $url);
+                if($response->getStatusCode() == "200") {
+                    $json = json_decode($response->getBody(), true);
+                    $cache->set($key, $json, 60);
+                    return $json;
+                } else {
+                    return false;
+                }
             }
-        } 
-        return false;
+            return false;
+        } else {
+            return $data;
+        }
     }
 
     public function getUser($term, $by = 'username', $fields= "username,name,email,about,url,avatar,role,company,position,location")
@@ -135,4 +142,6 @@ class SchedApiIntegrationService extends Component
         } 
         return false;
     }
+
+
 }

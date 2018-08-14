@@ -13,6 +13,7 @@ namespace julianmjones\schedapiintegration\variables;
 use julianmjones\schedapiintegration\SchedApiIntegration;
 
 use Craft;
+use Yii;
 
 /**
  * Sched API Integration Variable
@@ -51,7 +52,7 @@ class SchedApiIntegrationVariable
         return $result;
     }
 
-    public function schedule($optional = null)
+    public function schedule()
     {
         $result = SchedApiIntegration::$plugin->schedApiIntegrationService->getSchedule();
         return $result;
@@ -59,13 +60,49 @@ class SchedApiIntegrationVariable
 
     public function getUser($term, $by = 'username')
     {
-        $result = SchedApiIntegration::$plugin->schedApiIntegrationService->getUser($term, $by);
-        return $result;
+        $speakers = $this->getSpeakers();
+        //First, find the speaker in the speakers
+        $speakerIndex = array_search($term, array_column($speakers, $by));
+        if($speakerIndex) {
+            return $speakers[$speakerIndex];
+        }
+        return false;
     }
 
-    public function getSpeakers($fields = 'username,name,about,avatar,position')
+    public function getSpeakers($fields = 'username,name,about,avatar,position,sessions,url')
     {
-        $result = SchedApiIntegration::$plugin->schedApiIntegrationService->getRoleExport('speaker', $fields);
-        return $result;
+        $key = 'sched_speakers';
+        $cache = Yii::$app->cache;
+        $data = $cache->get($key);
+        if($data) {
+            return $data;
+        } else {
+            $result = SchedApiIntegration::$plugin->schedApiIntegrationService->getRoleExport('speaker', $fields);
+            if($result) {
+                $cache->set($key, $result, 120);
+                return $result;
+            }
+            return [];
+        }
+    }
+
+    public function getScheduleByUser($user) {
+        $schedule = $this->schedule();
+        $speakers = $this->getSpeakers();
+        $returnSessions = [];
+        //First, find the speaker in the speakers
+        $speakerIndex = array_search($user, array_column($speakers, 'username'));
+        if($speakerIndex) {
+            $speaker = $speakers[$speakerIndex];
+            $sessions = $speaker['sessions'];
+            foreach($sessions as $sessionId) {
+                $sessionIndex = array_search($sessionId, array_column($schedule, 'id'));
+                //If we've found a session, add it to the array
+                if($sessionIndex) {
+                    array_push($returnSessions, $schedule[$sessionIndex]);
+                }
+            }
+        }
+        return $returnSessions;
     }
 }
