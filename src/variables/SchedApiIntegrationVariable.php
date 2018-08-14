@@ -103,6 +103,10 @@ class SchedApiIntegrationVariable
                 }
             }
         }
+        //Sort the returning times
+        uasort($returnSessions, function($a, $b) {
+            return $a['start_time_ts'] - $b['start_time_ts'];
+        });
         return $returnSessions;
     }
 }
