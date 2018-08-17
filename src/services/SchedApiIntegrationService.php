@@ -118,7 +118,7 @@ class SchedApiIntegrationService extends Component
         return false;
     }
 
-    public function getRoleExport($role = 'speaker', $fields = '')
+    public function getRoleExport($role = 'speaker', $fields = '', $stripHtml = true)
     {
         $cache = Yii::$app->cache;
         $guzzleClient = new \GuzzleHttp\Client();
@@ -128,7 +128,10 @@ class SchedApiIntegrationService extends Component
         if ($apiKey && $conferenceId) {
             $url = 'https://'.$conferenceId
             .'.sched.com/api/role/export?api_key='.$apiKey
-            .'&role='.$role.'&format=json&strip_html=Y';
+            .'&role='.$role.'&format=json';
+            if($stripHtml) {
+                $url = $url.'&fstrip_html=Y';
+            }
             if($fields) {
                 $url = $url.'&fields='.$fields;
             }

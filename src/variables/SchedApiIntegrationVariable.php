@@ -86,6 +86,23 @@ class SchedApiIntegrationVariable
         }
     }
 
+    public function getSponsors() {
+        $key = 'sched_sponsors';
+        $cache = Yii::$app->cache;
+        $data = $cache->get($key);
+        if($data) {
+            return $data;
+        } else {
+            //Use the default fields and don't strip html
+            $result = SchedApiIntegration::$plugin->schedApiIntegrationService->getRoleExport('sponsor', null, false);
+            if($result) {
+                $cache->set($key, $result, 180);
+                return $result;
+            }
+            return [];
+        }
+    }
+
     public function getScheduleByUser($user) {
         $schedule = $this->schedule();
         $speakers = $this->getSpeakers();
