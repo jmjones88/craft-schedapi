@@ -63,7 +63,7 @@ class SchedApiIntegrationVariable
         $speakers = $this->getSpeakers();
         //First, find the speaker in the speakers
         $speakerIndex = array_search($term, array_column($speakers, $by));
-        if($speakerIndex) {
+        if($speakerIndex >= 0) {
             return $speakers[$speakerIndex];
         }
         return false;
@@ -109,7 +109,7 @@ class SchedApiIntegrationVariable
         $returnSessions = [];
         //First, find the speaker in the speakers
         $speakerIndex = array_search($user, array_column($speakers, 'username'));
-        if($speakerIndex) {
+        if($speakerIndex >= 0) {
             $speaker = $speakers[$speakerIndex];
             $sessions = $speaker['sessions'];
             if(is_array($sessions)) {
